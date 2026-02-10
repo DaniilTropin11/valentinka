@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С Днём Святого Валентина, Маська! ❤️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', cursive, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+    }
+    
+    .game-container {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      max-width: 90%;
+      width: 500px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #e63946;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: #1d3557;
+      font-weight: normal;
+    }
+    
+    .game-area {
+      background: #fef9f9;
+      border-radius: 20px;
+      height: 300px;
+      position: relative;
+      margin: 20px 0;
+      overflow: hidden;
+      border: 4px dashed #ffb3c1;
+      cursor: pointer;
+      box-shadow: inset 0 0 15px rgba(230, 57, 70, 0.2);
+    }
+    
+    .heart {
+      position: absolute;
+      font-size: 2.5rem;
+      cursor: pointer;
+      user-select: none;
+      animation: float 3s ease-in-out infinite;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    
+    .heart:hover {
+      transform: scale(1.2);
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      color: #1d3557;
+      font-weight: bold;
+    }
+    
+    .timer {
+      background: #e63946;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+    }
+    
+    .score {
+      background: #ffb3c1;
+      padding: 5px 15px;
+      border-radius: 20px;
+    }
+    
+    .message {
+      font-size: 1.6rem;
+      min-height: 60px;
+      margin: 20px 0;
+      color: #e63946;
+      font-weight: bold;
+      padding: 10px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    .message.show {
+      opacity: 1;
+    }
+    
+    .btn {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+    }
+    
+    .btn:hover {
+      background: #c1121f;
+      transform: scale(1.05);
+      box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+    
+    .end-screen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      padding: 30px;
+    }
+    
+    .final-score {
+      font-size: 4rem;
+      color: #e63946;
+      margin: 20px 0;
+      text-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+    
+    .love-message {
+      font-size: 1.8rem;
+      color: #1d3557;
+      margin: 25px 0;
+      line-height: 1.4;
+      max-width: 90%;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background-color: #f36;
+      border-radius: 0;
+      animation: confetti-fall 5s ease-in-out forwards;
+    }
+    
+    @keyframes confetti-fall {
+      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(1000px) rotate(720deg); opacity: 0; }
+    }
+    
+    .signature {
+      margin-top: 25px;
+      font-style: italic;
+      color: #1d3557;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>❤️ 14 февраля ❤️</h1>
+    <div class="subtitle">Собери как можно больше сердечек за 30 секунд!</div>
+    
+    <div class="stats">
+      <div class="timer">⏱️ <span id="time">30</span> сек</div>
+      <div class="score">💖 <span id="score">0</span></div>
+    </div>
+    
+    <div class="game-area" id="game-area">
+      <div class="message" id="message"></div>
+    </div>
+    
+    <button class="btn" id="start-btn">Начать игру</button>
+    
+    <div class="end-screen" id="end-screen">
+      <div>Ты собрала</div>
+      <div class="final-score" id="final-score">0</div>
+      <div>сердечек!</div>
+      <div class="love-message" id="love-message"></div>
+      <button class="btn" id="restart-btn">Сыграть ещё раз</button>
+    </div>
+    
+    <div class="signature" id="signature"></div>
+  </div>
+
+  <script>
+    // === НАСТРОЙКИ (измените имя здесь!) ===
+    const wifeName = "Любимая"; // ← ЗАМЕНИТЕ НА ИМЯ ВАШЕЙ ЖЕНЫ
+    
+    // Элементы DOM
+    const gameArea = document.getElementById('game-area');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const timeEl = document.getElementById('time');
+    const scoreEl = document.getElementById('score');
+    const messageEl = document.getElementById('message');
+    const endScreen = document.getElementById('end-screen');
+    const finalScoreEl = document.getElementById('final-score');
+    const loveMessageEl = document.getElementById('love-message');
+    const signatureEl = document.getElementById('signature');
+    
+    // Переменные игры
+    let score = 0;
+    let timeLeft = 30;
+    let gameActive = false;
+    let timer;
+    let heartInterval;
+    const hearts = [];
+    
+    // Сообщения для разных результатов
+    const messages = [
+      { min: 0, max: 5, text: "Начало пути к моему сердцу 💕" },
+      { min: 6, max: 12, text: "Ты уже забрала часть моего сердца 💗" },
+      { min: 13, max: 20, text: "Моё сердце бьётся только для тебя 💓" },
+      { min: 21, max: 30, text: "Ты забрала всё моё сердце! 💖" },
+      { min: 31, max: Infinity, text: "Моё сердце навсегда твоё! 💘" }
+    ];
+    
+    // Романтические финальные сообщения
+    const loveMessages = [
+      `Каждое сердечко — это день, когда я влюбляюсь в тебя заново. С Днём Святого Валентина, ${wifeName}! ❤️`,
+      `Ты — самое прекрасное сердце в моей жизни. Люблю тебя, ${wifeName}! 💝`,
+      `Даже если собрать все сердца мира, ни одно не сравнится с твоим. С любовью, ${wifeName}! 💞`,
+      `Моё сердце принадлежит тебе — сегодня, завтра и всегда. С Днём Валентина, ${wifeName}! 💓`,
+      `Ты делаешь каждый мой день похожим на праздник любви. Обожаю тебя, ${wifeName}! 💗`
+    ];
+    
+    // Подпись
+    signatureEl.textContent = `С любовью, твой муж ❤️`;
+    
+    // Создать сердечко
+    function createHeart() {
+      if (!gameActive) return;
+      
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤️';
+      
+      // Случайная позиция
+      const x = Math.random() * (gameArea.offsetWidth - 50);
+      const y = Math.random() * (gameArea.offsetHeight - 50);
+      
+      heart.style.left = `${x}px`;
+      heart.style.top = `${y}px`;
+      
+      // Случайная анимация
+      heart.style.animationDelay = `${Math.random() * 2}s`;
+      
+      // Обработчик клика
+      heart.addEventListener('click', () => {
+        if (!gameActive) return;
+        
+        // Эффект исчезновения
+        heart.style.transform = 'scale(1.5)';
+        heart.style.opacity = '0';
+        heart.style.transition = 'all 0.3s';
+        
+        // Звуковой эффект (визуальный)
+        showMessage('+1 ❤️');
+        
+        // Увеличить счёт
+        score++;
+        scoreEl.textContent = score;
+        
+        // Удалить сердечко через анимацию
+        setTimeout(() => {
+          if (gameArea.contains(heart)) {
+            gameArea.removeChild(heart);
+            hearts.splice(hearts.indexOf(heart), 1);
+          }
+        }, 300);
+      });
+      
+      gameArea.appendChild(heart);
+      hearts.push(heart);
+      
+      // Автоматическое удаление через 3 секунды
+      setTimeout(() => {
+        if (gameArea.contains(heart)) {
+          gameArea.removeChild(heart);
+          hearts.splice(hearts.indexOf(heart), 1);
+        }
+      }, 3000);
+    }
+    
+    // Показать временное сообщение
+    function showMessage(text) {
+      messageEl.textContent = text;
+      messageEl.classList.add('show');
+      
+      setTimeout(() => {
+        messageEl.classList.remove('show');
+      }, 800);
+    }
+    
+    // Создать конфетти
+    function createConfetti() {
+      const colors = ['#e63946', '#f77f00', '#06d6a0', '#118ab2', '#ef476f'];
+      
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.top = `${Math.random() * 20 - 20}px`;
+        confetti.style.width = `${Math.random() * 10 + 5}px`;
+        confetti.style.height = `${Math.random() * 10 + 5}px`;
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        
+        document.body.appendChild(confetti);
+        
+        // Удалить конфетти после анимации
+        setTimeout(() => {
+          if (document.body.contains(confetti)) {
+            document.body.removeChild(confetti);
+          }
+        }, 5000);
+      }
+    }
+    
+    // Таймер
+    function startTimer() {
+      timeLeft = 30;
+      timeEl.textContent = timeLeft;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+    
+    // Завершение игры
+    function endGame() {
+      gameActive = false;
+      clearInterval(timer);
+      clearInterval(heartInterval);
+      
+      // Удалить все сердечки
+      hearts.forEach(heart => {
+        if (gameArea.contains(heart)) {
+          gameArea.removeChild(heart);
+        }
+      });
+      hearts.length = 0;
+      
+      // Показать финальный экран
+      finalScoreEl.textContent = score;
+      
+      // Выбрать сообщение в зависимости от счёта
+      const message = messages.find(m => score >= m.min && score <= m.max) || messages[messages.length - 1];
+      loveMessageEl.textContent = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+      
+      // Эффект конфетти
+      createConfetti();
+      
+      // Показать экран
+      endScreen.style.display = 'flex';
+    }
+    
+    // Начать игру
+    function startGame() {
+      // Сбросить состояние
+      score = 0;
+      scoreEl.textContent = '0';
+      endScreen.style.display = 'none';
+      gameActive = true;
+      
+      // Очистить поле
+      hearts.forEach(heart => {
+        if (gameArea.contains(heart)) {
+          gameArea.removeChild(heart);
+        }
+      });
+      hearts.length = 0;
+      
+      // Запустить таймер
+      startTimer();
+      
+      // Создавать сердечки каждые 600мс
+      heartInterval = setInterval(createHeart, 600);
+      
+      // Создать первые сердечки
+      for (let i = 0; i < 3; i++) {
+        setTimeout(createHeart, i * 300);
+      }
+    }
+    
+    // Обработчики событий
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    
+    // Автоматически создать 2 сердечка для привлечения внимания до начала игры
+    setTimeout(createHeart, 500);
+    setTimeout(createHeart, 1200);
+  </script>
+</body>
+</html>
