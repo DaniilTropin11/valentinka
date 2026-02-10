@@ -1,509 +1,664 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>14-й день февраля месяца! ❤️</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>14-й день февраля месяца! ❤️</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body{
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Arial Rounded MT Bold','Comic Sans MS',cursive,sans-serif;
+      height:100vh; overflow:hidden;
+      display:flex; justify-content:center; align-items:center;
+      color:#fff; text-align:center;
+    }
+    .game-container{
+      background: rgba(255,255,255,.92);
+      border-radius: 30px;
+      padding: 26px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.25);
+      max-width: 92%;
+      width: 560px;
+      position: relative;
+      z-index: 10;
+    }
+    h1{
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color:#e63946;
+      text-shadow: 2px 2px 4px rgba(0,0,0,.1);
+    }
+    .subtitle{
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+      color:#1d3557;
+      font-weight: normal;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin: 10px 0 14px;
+      color:#1d3557;
+      font-weight: bold;
+    }
+    .pill{
+      display:flex; justify-content:center; align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 1.05rem;
+      user-select:none;
+    }
+    .timer{ background:#e63946; color:#fff; }
+    .score{ background:#ffb3c1; }
 
-        body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', cursive, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            text-align: center;
-        }
+    .meta{
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top: 10px;
+      color:#1d3557;
+      font-weight:bold;
+      font-size: 1.0rem;
+      flex-wrap: wrap;
+    }
+    .meta .small{
+      background: #f1faee;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px dashed #ffb3c1;
+      flex: 1;
+      min-width: 150px;
+    }
 
-        .game-container {
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 30px;
-            padding: 30px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-            max-width: 90%;
-            width: 500px;
-            position: relative;
-            z-index: 10;
-        }
+    .legend{
+      display:flex;
+      justify-content:center;
+      flex-wrap: wrap;
+      gap:8px;
+      margin: 10px 0 12px;
+      color:#1d3557;
+      font-weight: 700;
+      font-size: .98rem;
+    }
+    .chip{
+      background: rgba(29,53,87,.06);
+      border: 1px dashed rgba(230,57,70,.35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      user-select: none;
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #e63946;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+    .game-area{
+      background:#fef9f9;
+      border-radius: 20px;
+      height: 340px;
+      position: relative;
+      margin: 12px 0 16px;
+      overflow:hidden;
+      border: 4px dashed #ffb3c1;
+      cursor: crosshair;
+      box-shadow: inset 0 0 15px rgba(230,57,70,.2);
+    }
 
-        .subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            color: #1d3557;
-            font-weight: normal;
-        }
+    .message{
+      position:absolute;
+      left:50%; top:10px;
+      transform:translateX(-50%);
+      font-size: 1.12rem;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(230,57,70,.10);
+      color:#e63946;
+      font-weight:bold;
+      opacity:0;
+      transition: opacity .25s, transform .25s;
+      pointer-events:none;
+      z-index: 5;
+      max-width: 92%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .message.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(2px);
+    }
 
-        .game-area {
-            background: #fef9f9;
-            border-radius: 20px;
-            height: 300px;
-            position: relative;
-            margin: 20px 0;
-            overflow: hidden;
-            border: 4px dashed #ffb3c1;
-            cursor: pointer;
-            box-shadow: inset 0 0 15px rgba(230, 57, 70, 0.2);
-        }
+    .btn{
+      background:#e63946;
+      color:#fff;
+      border:none;
+      padding: 14px 34px;
+      font-size: 1.15rem;
+      border-radius: 50px;
+      cursor:pointer;
+      transition: all .2s;
+      font-weight:bold;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(230,57,70,.35);
+      width: 100%;
+    }
+    .btn:hover{ background:#c1121f; transform: scale(1.02); }
+    .btn:active{ transform: scale(.99); }
 
-        .heart {
-            position: absolute;
-            font-size: 2.5rem;
-            cursor: pointer;
-            user-select: none;
-            animation: float 3s ease-in-out infinite;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
+    .end-screen{
+      display:none;
+      position:absolute;
+      inset: 0;
+      background: rgba(255,255,255,.97);
+      border-radius: 20px;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      z-index:20;
+      padding: 26px;
+      color:#1d3557;
+    }
+    .final-score{
+      font-size: 3.6rem;
+      color:#e63946;
+      margin: 14px 0 6px;
+      text-shadow: 0 3px 6px rgba(0,0,0,.08);
+    }
+    .love-message{
+      font-size: 1.2rem;
+      color:#1d3557;
+      margin: 12px 0 16px;
+      line-height: 1.35;
+      max-width: 95%;
+    }
+    .signature{
+      margin-top: 14px;
+      font-style: italic;
+      color:#1d3557;
+      font-size: 1.0rem;
+      opacity:.9;
+    }
 
-            .heart:hover {
-                transform: scale(1.2);
-            }
+    .pop{
+      position:absolute;
+      font-weight: 900;
+      color:#e63946;
+      text-shadow: 0 2px 6px rgba(0,0,0,.15);
+      pointer-events:none;
+      animation: pop .55s ease-out forwards;
+      z-index: 6;
+    }
+    @keyframes pop{
+      0%{ transform: translate(-50%,-50%) scale(.9); opacity:0; }
+      20%{ opacity:1; }
+      100%{ transform: translate(-50%,-85%) scale(1.15); opacity:0; }
+    }
 
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: #1d3557;
-            font-weight: bold;
-        }
+    .item{
+      position:absolute;
+      font-size: 2.35rem;
+      cursor: pointer;
+      user-select:none;
+      text-shadow: 0 2px 6px rgba(0,0,0,.18);
+      transition: transform .12s, opacity .18s;
+      will-change: transform, opacity, left, top;
+      animation: float 2.4s ease-in-out infinite;
+    }
+    .item:hover{ transform: scale(1.14); }
 
-        .timer {
-            background: #e63946;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
+    @keyframes float{
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-14px) rotate(5deg); }
+    }
 
-        .score {
-            background: #ffb3c1;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
+    .shake{ animation: shake .25s linear 1; }
+    @keyframes shake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-6px); }
+      50%{ transform: translateX(6px); }
+      75%{ transform: translateX(-4px); }
+      100%{ transform: translateX(0); }
+    }
 
-        .message {
-            font-size: 1.6rem;
-            min-height: 60px;
-            margin: 20px 0;
-            color: #e63946;
-            font-weight: bold;
-            padding: 10px;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
+    .confetti{
+      position:absolute;
+      width: 12px; height: 12px;
+      background-color:#f36;
+      animation: confetti-fall 4.8s ease-in-out forwards;
+    }
+    @keyframes confetti-fall{
+      0%{ transform: translateY(-50px) rotate(0deg); opacity: 1; }
+      100%{ transform: translateY(1000px) rotate(720deg); opacity: 0; }
+    }
 
-            .message.show {
-                opacity: 1;
-            }
-
-        .btn {
-            background: #e63946;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
-        }
-
-            .btn:hover {
-                background: #c1121f;
-                transform: scale(1.05);
-                box-shadow: 0 7px 20px rgba(230, 57, 70, 0.6);
-            }
-
-            .btn:active {
-                transform: scale(0.98);
-            }
-
-        .end-screen {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.97);
-            border-radius: 20px;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            padding: 30px;
-        }
-
-        .final-score {
-            font-size: 4rem;
-            color: #e63946;
-            margin: 20px 0;
-            text-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-
-        .love-message {
-            font-size: 1.8rem;
-            color: #1d3557;
-            margin: 25px 0;
-            line-height: 1.4;
-            max-width: 90%;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-15px) rotate(5deg);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .confetti {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: #f36;
-            border-radius: 0;
-            animation: confetti-fall 5s ease-in-out forwards;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-50px) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(1000px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        .signature {
-            margin-top: 25px;
-            font-style: italic;
-            color: #1d3557;
-            font-size: 1.2rem;
-        }
-    </style>
+    .paused-overlay{
+      display:none;
+      position:absolute;
+      inset:0;
+      background: rgba(29,53,87,.10);
+      backdrop-filter: blur(2px);
+      z-index: 12;
+      align-items:center;
+      justify-content:center;
+      color:#1d3557;
+      font-weight: 900;
+      font-size: 1.35rem;
+    }
+    .paused-overlay.show{ display:flex; }
+  </style>
 </head>
+
 <body>
-    <div class="game-container">
-        <h1>14-й день февраля месяца! ❤️</h1>
-        <div class="subtitle">Масик лови их пока не разбежались! У тебя 30 секунд!</div>
-
-        <div class="stats">
-            <div class="timer">⏱️ <span id="time">30</span> сек</div>
-            <div class="score">💖 <span id="score">0</span> сердечек</div>
-        </div>
-
-        <div class="game-area" id="game-area">
-            <div class="message" id="message"></div>
-        </div>
-
-        <button class="btn" id="start-btn"> ГОУ!</button>
-
-        <div class="end-screen" id="end-screen">
-            <div>Ты поймала</div>
-            <div class="final-score" id="final-score">0</div>
-            <div>сбежавших сердечек!</div>
-            <div class="love-message" id="love-message"></div>
-            <button class="btn" id="restart-btn">Хочу ещё сердечек!</button>
-        </div>
-
-        <div class="signature" id="signature"></div>
+  <div class="game-container" id="container">
+    <h1>14-й день февраля месяца! ❤️</h1>
+    <div class="subtitle" id="subtitle">
+      Масик, лови их пока не разбежались! У тебя 30 секунд. Пробел — пауза.
     </div>
 
-    <script>
-     
-        const wifeName = "Маська"; 
+    <div class="stats">
+      <div class="pill timer">⏱️ <span id="time">30</span> сек</div>
+      <div class="pill score">💖 <span id="score">0</span></div>
+    </div>
 
-        // Элементы DOM
-        const gameArea = document.getElementById('game-area');
-        const startBtn = document.getElementById('start-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const timeEl = document.getElementById('time');
-        const scoreEl = document.getElementById('score');
-        const messageEl = document.getElementById('message');
-        const endScreen = document.getElementById('end-screen');
-        const finalScoreEl = document.getElementById('final-score');
-        const loveMessageEl = document.getElementById('love-message');
-        const signatureEl = document.getElementById('signature');
+    <div class="meta">
+      <div class="small">🔥 Комбо: <span id="combo">x1</span></div>
+      <div class="small">🏆 Рекорд: <span id="best">0</span></div>
+      <div class="small">🎚️ Уровень: <span id="level">1</span></div>
+    </div>
 
-        // Переменные игры
-        let score = 0;
-        let timeLeft = 30;
-        let gameActive = false;
-        let timer;
-        let heartInterval;
-        const hearts = [];
+    <div class="legend" aria-label="легенда">
+      <div class="chip">❤️ = +1</div>
+      <div class="chip">💛 = +5 и +2 сек</div>
+      <div class="chip">🐾 (Ася) = +3</div>
+      <div class="chip">💣 = −3 и комбо в ноль</div>
+      <div class="chip">клик мимо = −1</div>
+    </div>
 
-        // Весёлые сообщения для разных результатов
-        const messages = [
-            { min: 0, max: 5, text: "Эх... Сердца сегодня вялые 🤨" },
-            { min: 6, max: 12, text: "Неплохо! Но сердца от тебя разбегаются! 😆" },
-            { min: 13, max: 20, text: "Ого! Ты почти профессиональный ловец сердец! 🎯" },
-            { min: 21, max: 30, text: "Сердца сдаются! Ты слишком быстрая! 🏃‍♀️💨" },
-            { min: 31, max: Infinity, text: "Ты поймала ВСЕ мои сердечки! Больше некуда складывать! 🏆" }
-        ];
+    <div class="game-area" id="game-area" aria-label="игровое поле">
+      <div class="message" id="message"></div>
+      <div class="paused-overlay" id="paused">⏸️ Пауза (пробел)</div>
+    </div>
 
-        // Юмористические финальные сообщения
-        const loveMessages = [
-            `${wifeName}, каждое пойманное сердечко = +1 к терпению ко мне! Спасибо за твоё терпение! ❤️`,
-            `Если бы любовь измерялась в сердечках, ты бы уже была мультимиллионершей! 💰💖`,
-            `Сердечек: ${score}. Терпения ко мне: бесконечно. Спасибо, ${wifeName}! 😅💝`,
-            `Твои результаты: сердечек — ${score}, мой уровень влюблённости — зашкаливает! 📈💞`,
-            `Мои сердечки убегали, но твоя любовь их всех поймала! Магия, не иначе! 🪄💗`
-        ];
+    <button class="btn" id="start-btn">ГОУ!</button>
 
-        // Подпись с юмором
-        signatureEl.textContent = `Твой муж, который вечно теряет свои яйца* (сердечки) рядом с тобой ❤️`;
+    <div class="end-screen" id="end-screen">
+      <div>Ты поймала</div>
+      <div class="final-score" id="final-score">0</div>
+      <div>сбежавших сердечек!</div>
+      <div class="love-message" id="love-message"></div>
+      <button class="btn" id="restart-btn">Хочу ещё сердечек!</button>
+    </div>
 
-        // Создать сердечко
-        function createHeart() {
-            if (!gameActive) return;
+    <div class="signature" id="signature"></div>
+  </div>
 
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
+  <script>
+    const wifeName = "Маська";
+    const catName = "Ася";
 
-            // Случайная позиция
-            const x = Math.random() * (gameArea.offsetWidth - 50);
-            const y = Math.random() * (gameArea.offsetHeight - 50);
+    // DOM
+    const container = document.getElementById('container');
+    const gameArea = document.getElementById('game-area');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const timeEl = document.getElementById('time');
+    const scoreEl = document.getElementById('score');
+    const messageEl = document.getElementById('message');
+    const endScreen = document.getElementById('end-screen');
+    const finalScoreEl = document.getElementById('final-score');
+    const loveMessageEl = document.getElementById('love-message');
+    const signatureEl = document.getElementById('signature');
+    const comboEl = document.getElementById('combo');
+    const bestEl = document.getElementById('best');
+    const levelEl = document.getElementById('level');
+    const pausedOverlay = document.getElementById('paused');
 
-            heart.style.left = `${x}px`;
-            heart.style.top = `${y}px`;
+    signatureEl.textContent = `Твой муж ❤️ и инспектор качества ловли сердечек — ${catName} 🐾`;
 
-            // Случайная анимация
-            heart.style.animationDelay = `${Math.random() * 2}s`;
+    // Game state
+    let score = 0;
+    let timeLeft = 30;
+    let gameActive = false;
+    let paused = false;
 
-            // Добавляем подсказку при наведении
-            heart.title = "Ой, убегаю!";
+    let timerId = null;
+    let spawnId = null;
 
-            // Обработчик клика
-            heart.addEventListener('click', () => {
-                if (!gameActive) return;
+    const items = new Set();
 
-                // Эффект исчезновения
-                heart.style.transform = 'scale(1.5)';
-                heart.style.opacity = '0';
-                heart.style.transition = 'all 0.3s';
+    // Combo
+    let comboMult = 1;
+    let lastHitAt = 0;
 
-                // Весёлые сообщения при клике
-                const clickMessages = [
-                    'Поймала,суку! 👍',
-                    'Опа, туда её! 🤙',
-                    'Есть контакт, мать вашу! 📞',
-                    'Давай, быстрее мы опаздываем 👛',
-                    'Давай, давай! 😄'
-                ];
-                showMessage(clickMessages[Math.floor(Math.random() * clickMessages.length)]);
+    // Difficulty
+    let spawnEveryMs = 650;
+    let itemLifeMs = 2900;
 
-                // Увеличить счёт
-                score++;
-                scoreEl.textContent = score;
+    // Best score
+    const BEST_KEY = 'valentine_hearts_best';
+    const best = Number(localStorage.getItem(BEST_KEY) || 0);
+    bestEl.textContent = best;
 
-                // Удалить сердечко через анимацию
-                setTimeout(() => {
-                    if (gameArea.contains(heart)) {
-                        gameArea.removeChild(heart);
-                        hearts.splice(hearts.indexOf(heart), 1);
-                    }
-                }, 300);
-            });
+    const clickMessages = [
+      `Ася одобряет. Мур-мур ✅`,
+      `Лапкой не трогать — это ${wifeName} ловит! 🐾`,
+      `Поймала! ${catName} уже считает трофеи 😼`,
+      `Сердечко в копилку, корм — в миску 😄`,
+      `Опа! Даже ${catName} удивилась 😺`,
+      `Так, это было быстро. Подозреваю помощь лапок… 🐾`,
+      `Минус стресс, плюс сердечко. План идеальный.`,
+      `Лови ещё — ${catName} смотрит как судья на Олимпиаде 🏅`,
+      `Поймала! Теперь почесать ${catName} за ушком — обязательно.`,
+      `Хоп! Сердце спасено, брак укреплён 😄`
+    ];
 
-            gameArea.appendChild(heart);
-            hearts.push(heart);
+    const endMessages = [
+      `${wifeName}, ты поймала {score}. ${catName} говорит: “можно награду… вкусняшку?” 🐾`,
+      `Результат {score}. Я горжусь, ${wifeName}. ${catName} — тоже (но делает вид, что ей всё равно) 😼`,
+      `Поймано {score}. По шкале любви: “Ася легла на клавиатуру и всё подтверждает” 😺`,
+      `{score} сердечек! Если бы это были рыбки — ${catName} уже праздновала бы 🎣`,
+      `${wifeName}, {score} — это мощно. Я официально назначаю тебя Главной по ловле, а ${catName} — начальником контроля качества 🐾`,
+      `Счёт {score}. Сердца пытались сбежать, но ${wifeName} быстрее. ${catName} — свидетель и соучастник 😼`
+    ];
 
-            // Автоматическое удаление через 3 секунды
-            setTimeout(() => {
-                if (gameArea.contains(heart)) {
-                    heart.style.opacity = '0.5';
-                    heart.style.transition = 'opacity 0.5s';
-                    setTimeout(() => {
-                        if (gameArea.contains(heart)) {
-                            gameArea.removeChild(heart);
-                            hearts.splice(hearts.indexOf(heart), 1);
-                        }
-                    }, 500);
-                }
-            }, 3000);
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    function showMessage(text) {
+      messageEl.textContent = text;
+      messageEl.classList.add('show');
+      clearTimeout(showMessage._t);
+      showMessage._t = setTimeout(() => messageEl.classList.remove('show'), 850);
+    }
+
+    function popText(text, x, y, color = '#e63946'){
+      const el = document.createElement('div');
+      el.className = 'pop';
+      el.textContent = text;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.color = color;
+      gameArea.appendChild(el);
+      setTimeout(() => el.remove(), 600);
+    }
+
+    function updateDifficulty(){
+      const level = clamp(1 + Math.floor(score / 12), 1, 10);
+      levelEl.textContent = level;
+
+      spawnEveryMs = clamp(650 - (level - 1) * 45, 260, 650);
+      itemLifeMs = clamp(2900 - (level - 1) * 140, 1200, 2900);
+    }
+
+    function updateCombo(now){
+      const dt = now - lastHitAt;
+      if (dt <= 900) comboMult = clamp(comboMult + 1, 1, 4);
+      else comboMult = 1;
+
+      lastHitAt = now;
+      comboEl.textContent = 'x' + comboMult;
+    }
+
+    function resetCombo(){
+      comboMult = 1;
+      comboEl.textContent = 'x1';
+    }
+
+    function randomItemType(){
+      // heart 74%, gold 12%, bomb 8%, asya paw 6%
+      const r = Math.random();
+      if (r < 0.08) return 'bomb';
+      if (r < 0.20) return 'gold';
+      if (r < 0.26) return 'asya';
+      return 'heart';
+    }
+
+    function createItem() {
+      if (!gameActive || paused) return;
+
+      const type = randomItemType();
+      const el = document.createElement('div');
+      el.className = 'item';
+
+      let emoji = '❤️';
+      if (type === 'gold') emoji = '💛';
+      if (type === 'bomb') emoji = '💣';
+      if (type === 'asya') emoji = '🐾';
+      el.textContent = emoji;
+      el.dataset.type = type;
+
+      const pad = 24;
+      const x = Math.random() * (gameArea.clientWidth - pad*2) + pad;
+      const y = Math.random() * (gameArea.clientHeight - pad*2) + pad;
+
+      el.style.left = (x - 16) + 'px';
+      el.style.top  = (y - 18) + 'px';
+
+      el.style.animationDelay = (Math.random() * 1.6) + 's';
+
+      const bornAt = performance.now();
+      const life = itemLifeMs + Math.random() * 350;
+
+      const onHit = (ev) => {
+        ev.stopPropagation();
+        if (!gameActive || paused) return;
+
+        const now = performance.now();
+        const rect = gameArea.getBoundingClientRect();
+        const px = (ev.clientX || (ev.touches && ev.touches[0].clientX) || 0) - rect.left;
+        const py = (ev.clientY || (ev.touches && ev.touches[0].clientY) || 0) - rect.top;
+
+        el.style.transform = 'scale(1.6)';
+        el.style.opacity = '0';
+        el.style.pointerEvents = 'none';
+
+        if (type === 'bomb'){
+          score = Math.max(0, score - 3);
+          scoreEl.textContent = score;
+          resetCombo();
+          container.classList.add('shake');
+          setTimeout(() => container.classList.remove('shake'), 260);
+          showMessage('БАБАХ! −3 и комбо в ноль 💣');
+          popText('-3', px, py, '#1d3557');
+        } else if (type === 'gold'){
+          updateCombo(now);
+          const add = 5 * comboMult;
+          score += add;
+          scoreEl.textContent = score;
+          timeLeft = Math.min(45, timeLeft + 2);
+          timeEl.textContent = timeLeft;
+          showMessage('Золотое! +5 и +2 сек 💛');
+          popText('+' + add, px, py, '#f77f00');
+        } else if (type === 'asya'){
+          updateCombo(now);
+          const add = 3 * comboMult;
+          score += add;
+          scoreEl.textContent = score;
+          showMessage(`${catName}: “мур-буст!” 🐾 +${add}`);
+          popText('+' + add, px, py, '#118ab2');
+        } else {
+          updateCombo(now);
+          const add = 1 * comboMult;
+          score += add;
+          scoreEl.textContent = score;
+          showMessage(clickMessages[(Math.random()*clickMessages.length)|0]);
+          popText('+' + add, px, py, '#e63946');
         }
 
-        // Показать временное сообщение
-        function showMessage(text) {
-            messageEl.textContent = text;
-            messageEl.classList.add('show');
+        updateDifficulty();
+        scheduleSpawns();
 
-            setTimeout(() => {
-                messageEl.classList.remove('show');
-            }, 800);
-        }
+        setTimeout(() => removeItem(el), 160);
+      };
 
-        // Создать конфетти
-        function createConfetti() {
-            const colors = ['#e63946', '#f77f00', '#06d6a0', '#118ab2', '#ef476f'];
+      el.addEventListener('click', onHit, { passive: true });
+      el.addEventListener('touchstart', onHit, { passive: true });
 
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.top = `${Math.random() * 20 - 20}px`;
-                confetti.style.width = `${Math.random() * 10 + 5}px`;
-                confetti.style.height = `${Math.random() * 10 + 5}px`;
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      gameArea.appendChild(el);
+      items.add(el);
 
-                document.body.appendChild(confetti);
+      setTimeout(() => {
+        if (!items.has(el) || !gameActive) return;
+        el.style.opacity = '0.35';
+        setTimeout(() => removeItem(el), 240);
+      }, life);
 
-                // Удалить конфетти после анимации
-                setTimeout(() => {
-                    if (document.body.contains(confetti)) {
-                        document.body.removeChild(confetti);
-                    }
-                }, 5000);
-            }
-        }
+      const moveId = setInterval(() => {
+        if (!items.has(el) || !gameActive || paused) return;
+        const t = performance.now() - bornAt;
+        const drift = Math.sin(t/260) * 10;
+        el.style.transform = `translateX(${drift}px)`;
+      }, 120);
 
-        // Таймер
-        function startTimer() {
-            timeLeft = 30;
-            timeEl.textContent = timeLeft;
+      el._moveId = moveId;
+    }
 
-            timer = setInterval(() => {
-                timeLeft--;
-                timeEl.textContent = timeLeft;
+    function removeItem(el){
+      if (!el) return;
+      if (el._moveId) clearInterval(el._moveId);
+      if (items.has(el)) items.delete(el);
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }
 
-                // Весёлые сообщения когда время заканчивается
-                if (timeLeft === 10) {
-                    showMessage("Время почти вышло! ⏰");
-                }
-                if (timeLeft === 5) {
-                    showMessage("Сердца убегают! 🏃‍♂️💨");
-                }
-                if (timeLeft <= 0) {
-                    endGame();
-                }
-            }, 1000);
-        }
+    function clearItems(){
+      for (const el of Array.from(items)) removeItem(el);
+      items.clear();
+    }
 
-        // Завершение игры
-        function endGame() {
-            gameActive = false;
-            clearInterval(timer);
-            clearInterval(heartInterval);
+    function createConfetti(){
+      const colors = ['#e63946','#f77f00','#06d6a0','#118ab2','#ef476f'];
+      const count = 90;
+      for (let i=0;i<count;i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.backgroundColor = colors[(Math.random()*colors.length)|0];
+        c.style.left = (Math.random()*100) + '%';
+        c.style.top  = (Math.random()*18 - 18) + 'px';
+        c.style.width  = (Math.random()*10 + 5) + 'px';
+        c.style.height = (Math.random()*10 + 5) + 'px';
+        c.style.transform = `rotate(${Math.random()*360}deg)`;
+        c.style.animationDuration = (Math.random()*2.6 + 2.2) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 5200);
+      }
+    }
 
-            // Удалить все сердечки с эффектом
-            hearts.forEach(heart => {
-                heart.style.opacity = '0';
-                heart.style.transform = 'scale(0)';
-                heart.style.transition = 'all 0.5s';
-            });
+    function startTimer(){
+      clearInterval(timerId);
+      timeLeft = 30;
+      timeEl.textContent = timeLeft;
 
-            setTimeout(() => {
-                hearts.forEach(heart => {
-                    if (gameArea.contains(heart)) {
-                        gameArea.removeChild(heart);
-                    }
-                });
-                hearts.length = 0;
-            }, 500);
+      timerId = setInterval(() => {
+        if (!gameActive || paused) return;
+        timeLeft--;
+        timeEl.textContent = timeLeft;
 
-            // Показать финальный экран
-            finalScoreEl.textContent = score;
+        if (timeLeft === 10) showMessage("Время почти вышло! ⏰");
+        if (timeLeft === 5) showMessage("Сердца убегают! 🏃‍♂️💨");
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
 
-            // Выбрать сообщение в зависимости от счёта
-            const message = messages.find(m => score >= m.min && score <= m.max) || messages[messages.length - 1];
+    function scheduleSpawns(){
+      clearInterval(spawnId);
+      spawnId = setInterval(() => createItem(), spawnEveryMs);
+    }
 
-            // Динамическое сообщение с количеством сердечек
-            const randomMessage = loveMessages[Math.floor(Math.random() * loveMessages.length)];
-            loveMessageEl.textContent = randomMessage.replace('${score}', score);
+    function setPaused(next){
+      if (!gameActive) return;
+      paused = next;
+      pausedOverlay.classList.toggle('show', paused);
+      if (!paused) showMessage('Поехали! (Ася наблюдает) 🐾');
+    }
 
-            // Эффект конфетти
-            createConfetti();
+    function togglePause(){
+      setPaused(!paused);
+    }
 
-            // Показать экран с небольшой задержкой
-            setTimeout(() => {
-                endScreen.style.display = 'flex';
-            }, 1000);
-        }
+    function startGame(){
+      score = 0;
+      scoreEl.textContent = '0';
+      resetCombo();
+      updateDifficulty();
 
-        // Начать игру
-        function startGame() {
-            // Сбросить состояние
-            score = 0;
-            scoreEl.textContent = '0';
-            endScreen.style.display = 'none';
-            gameActive = true;
+      endScreen.style.display = 'none';
+      gameActive = true;
+      paused = false;
+      pausedOverlay.classList.remove('show');
 
-            // Очистить поле
-            hearts.forEach(heart => {
-                if (gameArea.contains(heart)) {
-                    gameArea.removeChild(heart);
-                }
-            });
-            hearts.length = 0;
+      clearItems();
+      startTimer();
+      scheduleSpawns();
 
-            // Запустить таймер
-            startTimer();
+      for (let i=0;i<4;i++) setTimeout(createItem, i*220);
 
-            // Создавать сердечки каждые 600мс
-            heartInterval = setInterval(createHeart, 600);
+      showMessage(`Лови! И помни: ${catName} тут главная 🐾`);
+    }
 
-            // Создать первые сердечки
-            for (let i = 0; i < 3; i++) {
-                setTimeout(createHeart, i * 300);
-            }
+    function endGame(){
+      if (!gameActive) return;
+      gameActive = false;
+      paused = false;
 
-            // Весёлое стартовое сообщение
-            showMessage("Лови сердечки! Они убегают! 🏃‍♀️💨");
-        }
+      clearInterval(timerId);
+      clearInterval(spawnId);
+      clearItems();
 
-        // Обработчики событий
-        startBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
+      finalScoreEl.textContent = score;
 
-        // Автоматически создать 2 сердечка для привлечения внимания до начала игры
-        setTimeout(() => {
-            if (!gameActive) createHeart();
-        }, 500);
+      const prevBest = Number(localStorage.getItem(BEST_KEY) || 0);
+      if (score > prevBest){
+        localStorage.setItem(BEST_KEY, String(score));
+        bestEl.textContent = score;
+      }
 
-        setTimeout(() => {
-            if (!gameActive) createHeart();
-        }, 1200);
-    </script>
+      const msg = endMessages[(Math.random()*endMessages.length)|0].replace('{score}', score);
+      loveMessageEl.textContent = msg;
+
+      createConfetti();
+      setTimeout(() => endScreen.style.display = 'flex', 650);
+    }
+
+    // Click miss penalty (field click)
+    gameArea.addEventListener('click', (ev) => {
+      if (!gameActive || paused) return;
+
+      score = Math.max(0, score - 1);
+      scoreEl.textContent = score;
+      resetCombo();
+      updateDifficulty();
+      scheduleSpawns();
+
+      const rect = gameArea.getBoundingClientRect();
+      popText('-1', (ev.clientX - rect.left), (ev.clientY - rect.top), '#1d3557');
+      showMessage(`${catName}: “промах… но я всё равно красивая” 😼`);
+    });
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space'){
+        e.preventDefault();
+        togglePause();
+      }
+    });
+
+    // Small “teaser” before start
+    setTimeout(() => {
+      if (gameActive) return;
+      gameActive = true;
+      paused = true;
+      pausedOverlay.classList.add('show');
+      createItem();
+      showMessage(`${catName} проверяет поле… 🐾`);
+      setTimeout(() => {
+        gameActive = false;
+        paused = false;
+        pausedOverlay.classList.remove('show');
+        clearItems();
+        showMessage('Нажми ГОУ! (Ася уже готова судить) 😼');
+      }, 900);
+    }, 650);
+  </script>
 </body>
 </html>
+```
